@@ -7,8 +7,19 @@ const bot = new Telegraf(process.env.TOKEN);
 let message_cash = []; // this array contain all the message ID's that the bot is sending.
 let chat_id;
 
+
+bot.command('about', (ctx) => {
+    chat_id = ctx.chat.id;
+    bot.telegram.sendMessage(chat_id,`The identity of the developer
+is anonymous.`).then((m) => {
+        message_cash.push(m.message_id);
+    }).catch((err) => {
+      console.log(err);
+    });
+})
+
 // authentication & authorization.
-bot.use(async (ctx, next) => { 
+bot.use(async (ctx, next) => {
     chat_id = ctx.chat.id;
     if(ctx.message.from.username === 'fadl0_o' || ctx.message.from.username === 'astro_ali72'){
         await next();
@@ -135,14 +146,6 @@ bot.command('clear', (ctx) => {
 
 
 // this callback function is handling the '/about' command
-bot.command('about', (ctx) => {
-    bot.telegram.sendMessage(chat_id,`The identity of the developer
-is anonymous ok 👍
-we don't want problems 😉`).then((m) => {
-        message_cash.push(m.message_id);
-    }).catch((err) => {
-      console.log(err);
-    });
-})
+
 
 bot.launch(); // this function lunch the app and make it start listening for events.
