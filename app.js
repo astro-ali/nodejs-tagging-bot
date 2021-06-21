@@ -74,8 +74,6 @@ bot.command('tagall', (ctx) => {
       console.log(err);
     });
     let counter = 1;
-    console.log(typeof ctx.message.from.username);
-    console.log('-----------------');
     (function myLoop(i) {
         setTimeout( async function(){ 
             
