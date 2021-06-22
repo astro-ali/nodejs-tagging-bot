@@ -1,11 +1,20 @@
 const { Telegraf } = require('telegraf');
 const members = require('./members');
+const fs = require('fs');
 require('dotenv').config();
 
 const bot = new Telegraf(process.env.TOKEN);
 
 let message_cash = []; // this array contain all the message ID's that the bot is sending.
 let chat_id;
+
+/**
+ * these variables is for collecting user data
+ * to enhance the user experience.
+ */
+let data = {};
+let array_form_set = [];
+data.table = []; // data.table.push(obj) how to write to the array inside of the json obj.
 
 
 bot.command('about', (ctx) => {
@@ -41,6 +50,31 @@ bot.command('start', (ctx) => {
     bot.telegram.sendMessage(chat_id,`Welcome to The tagger Bot 👋
 Try /help to see all the available commands`).then((m) => {
         message_cash.push(m.message_id);
+        // collecting user data
+        // let current_data = {};
+        // fs.readFile('./users_data.json', 'utf8', (err, jsonString) => {
+        //     if (err) {
+        //       console.log("File read failed:", err)
+        //       return 
+        //     }
+        //     current_data = JSON.parse(jsonString);
+        // });
+        // let user_name = ctx.message.from.username;
+        // users_set = new Set(current_data.table);
+        // users_set.add(user_name);
+        // array_form_set = Array.from(users_set);
+        // let json_to_json = {
+        //     "table": array_form_set
+        // }
+        // console.log(json_to_json);
+        // fs.writeFile("users_data.json", JSON.stringify(json_to_json), function(err){
+        //     if (err){
+        //         console.log(err);
+        //     }
+        //     else {
+        //         console.log('User data stored!');
+        //     }
+        // });
     }).catch((err) => {
       console.log(err);
     });
