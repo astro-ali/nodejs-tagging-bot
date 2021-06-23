@@ -1,3 +1,4 @@
+"use strict";
 const { Telegraf } = require('telegraf');
 const members = require('./members');
 const fs = require('fs');
@@ -17,6 +18,17 @@ let array_form_set = [];
 data.table = []; // data.table.push(obj) how to write to the array inside of the json obj.
 
 
+bot.use(async (ctx, next) => {
+    let user_message = ctx.update.message.text;
+    if(user_message.includes('/')){
+        await next();
+    }
+    else{
+        return console.log(`[${ctx.message.from.username} didn't use commands]`);
+    }
+});
+
+
 bot.command('about', (ctx) => {
     chat_id = ctx.chat.id;
     bot.telegram.sendMessage(chat_id,`The identity of the developer
@@ -28,53 +40,28 @@ is anonymous.`).then((m) => {
 })
 
 // authentication & authorization.
-bot.use(async (ctx, next) => {
+bot.use( async (ctx, next) => {
     chat_id = ctx.chat.id;
+    let user = ctx.message.from.username;
     if(ctx.message.from.username === 'fadl0_o' || ctx.message.from.username === 'astro_ali72'){
         await next();
     }
-    else {
-        bot.telegram.sendMessage(chat_id,'You are not authorized 🙃').then((m) => {
+    else{
+        bot.telegram.sendMessage(chat_id,`[${user}] You are not authorized 😊`).then((m) => {
             message_cash.push(m.message_id);
-            console.log(`[${ctx.message.from.username}] tries to use your bot`);
+            console.log(`[${user}] tries to use your bot`);
         }).catch((err) => {
-          console.log(err);
+            console.log(err);
         });
     }
-    
 });
 
 // handling '/start' command
 bot.command('start', (ctx) => {
-    console.log("'/start' got called");
+    console.log("'/start' is called");
     bot.telegram.sendMessage(chat_id,`Welcome to The tagger Bot 👋
 Try /help to see all the available commands`).then((m) => {
         message_cash.push(m.message_id);
-        // collecting user data
-        // let current_data = {};
-        // fs.readFile('./users_data.json', 'utf8', (err, jsonString) => {
-        //     if (err) {
-        //       console.log("File read failed:", err)
-        //       return 
-        //     }
-        //     current_data = JSON.parse(jsonString);
-        // });
-        // let user_name = ctx.message.from.username;
-        // users_set = new Set(current_data.table);
-        // users_set.add(user_name);
-        // array_form_set = Array.from(users_set);
-        // let json_to_json = {
-        //     "table": array_form_set
-        // }
-        // console.log(json_to_json);
-        // fs.writeFile("users_data.json", JSON.stringify(json_to_json), function(err){
-        //     if (err){
-        //         console.log(err);
-        //     }
-        //     else {
-        //         console.log('User data stored!');
-        //     }
-        // });
     }).catch((err) => {
       console.log(err);
     });
@@ -86,12 +73,9 @@ bot.command('help', (ctx) => {
     bot.telegram.sendMessage(chat_id,`
 Hello and welcome again to the tagger Bot.
 
-This bot is designed specifically for IE morning
-Group and it can only tag IE - morning students
-by typing the following command /tagall and the
-bot will start to tag all the group members
-individually. and there is /clear and it simply
-will delete all the bot messages.
+Try /tagall to tag all Group members
+
+Try /clear to delete all tag masseges
 
 About the developer : /about
 
@@ -168,11 +152,11 @@ bot.command('clear', (ctx) => {
                 if(--i){
                     myLoop(i); // decrement i and call myLoop again if i > 0
                 }
-            }, 80);
+            }, 150);
         })(message_cash.length);
     }
     else {
-        console.log('The message cash is clear!');
+        console.log('The cash is clear!');
         ctx.reply('The Group chat is clean 👍');
     }
 
