@@ -3,6 +3,7 @@ const { Telegraf } = require('telegraf');
 const members = require('./members');
 const fs = require('fs');
 const cacher = require('./util');
+const { resolveTxt } = require('dns');
 require('dotenv').config();
 
 const bot = new Telegraf(process.env.TOKEN);
@@ -17,6 +18,19 @@ let chat_id;
 let data = {};
 let set_to_array = [];
 data.table = []; // data.table.push(obj) how to write to the array inside of the json obj.
+
+
+/**
+ * to reverse the member array 
+ * because the tagging loop is 
+ * reversed.
+ */
+members.reverse();
+
+/**
+* TODO:
+* prevent all users form using a middleWare when one user is currently using it
+*/
 
 
 bot.use(async (ctx, next) => {
@@ -159,8 +173,9 @@ bot.command('tagall', (ctx) => {
             if(--i){
                 myLoop(i); // decrement i and call myLoop again if i > 0
             }
-        }, 3000);
+        }, 2300);
     })(members.length);
+    return;
 });
 
 
